@@ -23,4 +23,9 @@ public class PriceService {
 
         return priceProvider.findPricesByParameters(productId, brandId, applicationDate);
     }
+
+    public List<Price> getPriceByOptionalParameters(Integer productId, Integer brandId, LocalDateTime applicationDate) {
+
+        return priceProvider.findPricesByOptionalParameters(productId, brandId, applicationDate);
+    }
 }

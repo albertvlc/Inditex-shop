@@ -25,8 +25,8 @@ public class PriceServiceTest {
         priceService = new PriceService(priceProvider);
     }
 
-    Integer productId = 1;
-    Integer brandId = 2;
+    Integer productId = 35455;
+    Integer brandId = 1;
     Price expectedPrice = createMockPrice(brandId, productId);
 
     @Test
@@ -48,6 +48,20 @@ public class PriceServiceTest {
         when(priceProvider.findPricesByParameters(productId, brandId, applicationDate)).thenReturn(expectedPrices);
 
         List<Price> actualPrices = priceService.getPriceByParameters(productId, brandId, applicationDate);
+
+        assertEquals(expectedPrices, actualPrices);
+    }
+
+    @Test
+    public void shouldReturnListOfPricesForWhenGetSomeOptionalParameterMatchTheCriteria() {
+        productId = null;
+        brandId = null;
+        LocalDateTime applicationDate = LocalDateTime.now();
+        List<Price> expectedPrices = new ArrayList<>(createMockPricesForTest());
+
+        when(priceProvider.findPricesByOptionalParameters(productId, brandId, applicationDate)).thenReturn(expectedPrices);
+
+        List<Price> actualPrices = priceService.getPriceByOptionalParameters(productId, brandId, applicationDate);
 
         assertEquals(expectedPrices, actualPrices);
     }

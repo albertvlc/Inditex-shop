@@ -8,4 +8,7 @@ public interface PriceProvider {
     Price findByProductId(Integer productId);
 
     List<Price> findPricesByParameters(Integer productId, Integer brandId, LocalDateTime applicationDate);
+
+    List<Price> findPricesByOptionalParameters(Integer productId, Integer brandId, LocalDateTime applicationDate);
+
 }

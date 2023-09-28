@@ -5,9 +5,11 @@ import com.example.albert.shop.price.domain.provider.PriceProvider;
 import com.example.albert.shop.price.infrastructure.entity.PriceEntity;
 import com.example.albert.shop.price.infrastructure.jpa.PriceRepository;
 import com.example.albert.shop.price.infrastructure.mapper.PriceMapper;
+import com.example.albert.shop.price.infrastructure.provider.specifications.PriceSpecifications;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -41,6 +43,19 @@ public class PriceProviderImpl implements PriceProvider {
                 .map(priceMapper::convertToDomain)
                 .collect(Collectors.toList());
 
+    }
+
+    @Override
+    public List<Price> findPricesByOptionalParameters(Integer productId, Integer brandId, LocalDateTime applicationDate) {
+        Specification<PriceEntity> criteria = Specification.where(PriceSpecifications.withProductId(productId))
+                .and(PriceSpecifications.withBrandId(brandId))
+                .and(PriceSpecifications.withApplicationDate(applicationDate));
+
+        List<PriceEntity> listPriceEntity = priceRepository.findAll(criteria);
+
+        return listPriceEntity.stream()
+                .map(priceMapper::convertToDomain)
+                .collect(Collectors.toList());
     }
 
 }
