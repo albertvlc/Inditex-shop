@@ -8,7 +8,7 @@ import java.util.List;
 
 public class PriceHelper {
 
-    public static Price createMockPrice(Integer brandId, Integer productId) {
+    public static Price createMockPrice(Integer productId, Integer brandId) {
         Price price = new Price();
         price.setProductId(productId);
         price.setBrandId(brandId);

@@ -28,4 +28,5 @@ public class PriceService {
 
         return priceProvider.findPricesByOptionalParameters(productId, brandId, applicationDate);
     }
+
 }

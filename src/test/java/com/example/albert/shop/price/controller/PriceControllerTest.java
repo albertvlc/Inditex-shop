@@ -1,8 +1,11 @@
 package com.example.albert.shop.price.controller;
 
 import com.example.albert.shop.price.application.PriceService;
+import com.example.albert.shop.price.domain.Price;
 import com.example.albert.shop.price.infrastructure.controller.PriceController;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -50,7 +53,7 @@ public class PriceControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.productId", is(1)))
+                .andExpect(jsonPath("$.productId", is(productId)))
                 .andExpect(jsonPath("$.price", is(35.50)))
                 .andExpect(jsonPath("$.currency", is("EUR")));
     }
@@ -70,9 +73,9 @@ public class PriceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].productId", is(productId)))
                 .andExpect(jsonPath("$[0].price", is(35.50)))
-                .andExpect(jsonPath("$[0].curr", is("EUR")));
+                .andExpect(jsonPath("$[0].currency", is("EUR")));
     }
 
     @Test
@@ -90,9 +93,53 @@ public class PriceControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].id", is(1)))
+                .andExpect(jsonPath("$[0].productId", is(productId)))
                 .andExpect(jsonPath("$[0].price", is(35.50)))
-                .andExpect(jsonPath("$[0].curr", is("EUR")));
+                .andExpect(jsonPath("$[0].currency", is("EUR")));
+    }
+
+    @Test
+    public void shouldGetPriceByOptionalParametersWithMissingParams() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/prices/by-optional-params")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void shouldGetPriceByOptionalParametersWithParamsAndParamsNulls() throws Exception {
+        List<Price> mockPrices = new ArrayList<>();
+        Price expectedPrice = createMockPrice(productId, brandId);
+        mockPrices.add(expectedPrice);
+
+
+        when(priceService.getPriceByOptionalParameters(productId, brandId, null))
+                .thenReturn(mockPrices);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/prices/by-optional-params")
+                        .param("productId", productId.toString())
+                        .param("brandId", brandId.toString())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(1)))
+                .andExpect(jsonPath("$[0].productId", is(productId)))
+                .andExpect(jsonPath("$[0].price", is(35.50)))
+                .andExpect(jsonPath("$[0].currency", is("EUR")));
+    }
+
+    @Test
+    public void shouldGetPriceByOptionalParametersWithEmptyResult() throws Exception {
+        LocalDateTime applicationDate = LocalDateTime.of(2020, 6, 14, 10, 0);
+
+        when(priceService.getPriceByOptionalParameters(productId, brandId, applicationDate))
+                .thenReturn(new ArrayList<>());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/prices/by-optional-params")
+                        .param("productId", productId.toString())
+                        .param("brandId", brandId.toString())
+                        .param("applicationDate", "2020-06-14")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
 

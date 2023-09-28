@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,5 +49,32 @@ public class PriceController {
     /*
 `        curl --location 'http://localhost:8080/prices/by-params?productId=35455&brandId=1&applicationDate=2020-06-14T00:00:00'
 `    */
+
+    @GetMapping("/by-optional-params")
+    public ResponseEntity<List<Price>> getPriceByOptionalParameters(
+            @RequestParam(name = "productId", required = false) Integer productId,
+            @RequestParam(name = "brandId", required = false) Integer brandId,
+            @RequestParam(name = "applicationDate", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate applicationDate
+    ) {
+        if (productId == null && brandId == null && applicationDate == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        LocalDateTime date = null;
+        if( applicationDate != null ) {
+            date = LocalDateTime.of(applicationDate, LocalTime.now());
+        }
+        // Trick para adicionar la fecha en yyyy-MM-dd, no es la mejor manera de implementar la solución si queremos ser muy especificos con el tiempo
+        List<Price> prices = priceService.getPriceByOptionalParameters(productId, brandId,date);
+
+        if (prices.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(prices);
+    }
+
+    /*
+        curl --location 'http://localhost:8080/prices/by-optional-params?applicationDate=2020-06-14'
+    */
 
 }
