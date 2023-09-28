@@ -1,4 +1,4 @@
-package com.example.albert.shop.controller;
+package com.example.albert.shop.price.controller;
 
 import com.example.albert.shop.price.application.PriceService;
 import com.example.albert.shop.price.infrastructure.controller.PriceController;
