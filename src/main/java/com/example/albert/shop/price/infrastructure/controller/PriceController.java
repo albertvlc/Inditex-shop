@@ -31,4 +31,24 @@ public class PriceController {
         curl --location 'http://localhost:8080/prices/by-product-id?productId=35455'
     */
 
+    @GetMapping("/by-params")
+    public ResponseEntity<List<Price>> getPriceByParameters(
+            @RequestParam("productId") Integer productId,
+            @RequestParam("brandId") Integer brandId,
+            @RequestParam("applicationDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime applicationDate
+    ) {
+
+        List<Price> prices = priceService.getPriceByParameters(productId, brandId, applicationDate);
+
+        if (prices.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(prices);
+    }
+
+    /*
+`        curl --location 'http://localhost:8080/prices/by-params?productId=35455&brandId=1&applicationDate=2020-06-14T00:00:00'
+`    */
+
 }
