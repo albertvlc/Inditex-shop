@@ -7,11 +7,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/prices")
@@ -76,5 +74,26 @@ public class PriceController {
     /*
         curl --location 'http://localhost:8080/prices/by-optional-params?applicationDate=2020-06-14'
     */
+
+    @PostMapping("/create")
+    public ResponseEntity<Price> createPrice(@RequestBody Price price) {
+        Price createdPrice = priceService.createPrice(price);
+        return new ResponseEntity<>(createdPrice, HttpStatus.CREATED);
+    }
+
+    /*
+        curl --location 'http://localhost:8080/prices/create' \
+            --header 'Content-Type: application/json' \
+            --data '{
+                "productId": 123,
+                "brandId": 456,
+                "startDate": "2023-09-29T10:00:00",
+                "endDate": "2023-09-30T10:00:00",
+                "priceList": 1,
+                "priority": 2,
+                "price": 99.99,
+                "currency": "EUR"
+        }'
+     */
 
 }

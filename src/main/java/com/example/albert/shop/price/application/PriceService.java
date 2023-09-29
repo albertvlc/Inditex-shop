@@ -28,5 +28,8 @@ public class PriceService {
 
         return priceProvider.findPricesByOptionalParameters(productId, brandId, applicationDate);
     }
+    public Price createPrice(Price price){
+        return priceProvider.createPrice(price);
+    }
 
 }

@@ -11,4 +11,5 @@ public interface PriceProvider {
 
     List<Price> findPricesByOptionalParameters(Integer productId, Integer brandId, LocalDateTime applicationDate);
 
+    Price createPrice(Price price);
 }

@@ -65,4 +65,15 @@ public class PriceServiceTest {
 
         assertEquals(expectedPrices, actualPrices);
     }
+
+    @Test
+    public void shouldCreatePriceWhenValidPrice() {
+        Price priceToAdd = createMockPrice(brandId, productId);
+
+        when(priceProvider.createPrice(priceToAdd)).thenReturn(priceToAdd);
+
+        Price addedPrice = priceService.createPrice(priceToAdd);
+
+        assertEquals(priceToAdd, addedPrice);
+    }
 }

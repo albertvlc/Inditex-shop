@@ -9,6 +9,7 @@ import com.example.albert.shop.price.infrastructure.provider.specifications.Pric
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +57,15 @@ public class PriceProviderImpl implements PriceProvider {
         return listPriceEntity.stream()
                 .map(priceMapper::convertToDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Price createPrice(@NotNull Price price) {
+        PriceEntity priceEntity= priceMapper.convertToEntity(price);
+
+        priceEntity = priceRepository.save(priceEntity);
+
+        return priceMapper.convertToDomain(priceEntity);
     }
 
 }

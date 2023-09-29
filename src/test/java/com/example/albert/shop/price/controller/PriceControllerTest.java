@@ -3,6 +3,7 @@ package com.example.albert.shop.price.controller;
 import com.example.albert.shop.price.application.PriceService;
 import com.example.albert.shop.price.domain.Price;
 import com.example.albert.shop.price.infrastructure.controller.PriceController;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -23,6 +25,7 @@ import static com.example.albert.shop.price.helpers.PriceHelper.createMockPrice;
 import static com.example.albert.shop.price.helpers.PriceHelper.createMockPricesForTestByDate;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -36,6 +39,10 @@ public class PriceControllerTest {
     private PriceService priceService;
     private Integer brandId = 1;
     private Integer productId = 35455;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     @BeforeEach
     public void setUp() {
@@ -142,5 +149,21 @@ public class PriceControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    public void shouldCreatePrice() throws Exception {
+        Price price = createMockPrice(productId,brandId);
+
+        when(priceService.createPrice(any(Price.class))).thenReturn(price);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/prices/create")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(price)))
+                .andExpect(status().isCreated())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.productId").value(productId))
+                .andExpect(jsonPath("$.brandId").value(brandId))
+                .andExpect(jsonPath("$.price").value(35.5))
+                .andExpect(jsonPath("$.currency").value("EUR"));
+    }
 
 }
