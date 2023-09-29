@@ -6,9 +6,11 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import lombok.Data;
 
 @Entity
 @Table(name = "Prices")
+@Data
 public class PriceEntity {
     @Id
     @Column(name = "product_id")
@@ -42,69 +44,7 @@ public class PriceEntity {
         this.price = price;
         this.currency = currency;
     }
-    public Integer getBrandId() {
-        return brandId;
-    }
 
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public Integer getPriceList() {
-        return priceList;
-    }
-
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public Integer getPriority() {
-        return priority;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public String getCurrency() {
-        return currency;
-    }
-
-    public void setProductId(Integer productId) {
-        this.productId = productId;
-    }
-
-    public void setBrandId(Integer brandId) {
-        this.brandId = brandId;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    public void setPriceList(Integer priceList) {
-        this.priceList = priceList;
-    }
-
-    public void setPriority(Integer priority) {
-        this.priority = priority;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public void setCurrency(String currency) {
-        this.currency = currency;
-    }
 }
 
 
